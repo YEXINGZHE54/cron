@@ -7,19 +7,22 @@ Callers may register Funcs to be invoked on a given schedule.  Cron will run
 them in their own goroutines.
 
 	c := cron.New()
-	c.AddFunc("0 30 * * * *", func() { fmt.Println("Every hour on the half hour") })
-	c.AddFunc("@hourly",      func() { fmt.Println("Every hour") })
-	c.AddFunc("@every 1h30m", func() { fmt.Println("Every hour thirty") })
+	c.AddFunc("0 30 * * * *", func() { fmt.Println("Every hour on the half hour"), "key1" })
+	c.AddFunc("@hourly",      func() { fmt.Println("Every hour") }, "key2")
+	c.AddFunc("@every 1h30m", func() { fmt.Println("Every hour thirty") }, "key3")
 	c.Start()
 	..
 	// Funcs are invoked in their own goroutine, asynchronously.
 	...
 	// Funcs may also be added to a running Cron
-	c.AddFunc("@daily", func() { fmt.Println("Every day") })
+	c.AddFunc("@daily", func() { fmt.Println("Every day") }, "key4")
 	..
 	// Inspect the cron job entries' next and previous run times.
 	inspect(c.Entries())
 	..
+	// then you can remove a running job
+	c.Remove("key4")
+	// Stop method will totally stop all job
 	c.Stop()  // Stop the scheduler (does not stop any jobs already running).
 
 CRON Expression Format
